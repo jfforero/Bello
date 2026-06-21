@@ -205,8 +205,8 @@
         <iframe
             id="experienceFrame"
             src="about:blank"
-            allow="accelerometer; gyroscope; magnetometer; vr; xr; xr-spatial-tracking; autoplay; camera; microphone"
-            sandbox="allow-forms allow-modals allow-orientation-lock allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts">
+            allow="accelerometer; gyroscope; magnetometer; vr; xr; xr-spatial-tracking; autoplay; camera; microphone; fullscreen"
+            title="Entorno virtual Bello">
         </iframe>
     </div>
 
@@ -219,7 +219,7 @@
         </div>
 
         <div class="button-container">
-            <button onclick="launchEnvironment('index.html')" class="btn-enter">
+            <button onclick="launchEnvironment('visualizar.html')" class="btn-enter">
                 VISUALIZAR ENTORNO VIRTUAL
             </button>
 
@@ -242,6 +242,18 @@
         const returnBtn = document.getElementById('returnBtn');
 
         function launchEnvironment(url) {
+            frame.onload = () => {
+                try {
+                    const scene = frame.contentDocument?.querySelector('a-scene');
+                    if (scene && scene.hasLoaded) {
+                        scene.resize();
+                    } else if (scene) {
+                        scene.addEventListener('loaded', () => scene.resize(), { once: true });
+                    }
+                } catch (e) {
+                    /* cross-origin iframe */
+                }
+            };
             frame.src = url;
             overlay.classList.add('hidden');
             returnBtn.classList.add('visible');
